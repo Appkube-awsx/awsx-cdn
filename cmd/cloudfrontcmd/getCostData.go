@@ -1,7 +1,6 @@
 package cloudfrontcmd
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/Appkube-awsx/awsx-cloudfront/authenticator"
@@ -41,17 +40,17 @@ func getCloudFunctionCostDetail(region string, crossAccountRoleArn string, acces
 
 	input := &costexplorer.GetCostAndUsageInput{
 		TimePeriod: &costexplorer.DateInterval{
-			Start: aws.String("2023-01-01"),
-			End:   aws.String("2023-02-01"),
+			Start: aws.String("2022-07-01"),
+			End:   aws.String("2022-07-31"),
 		},
 		Metrics: []*string{
-			aws.String("USAGE_QUANTITY"),
+			// aws.String("USAGE_QUANTITY"),
 			aws.String("UNBLENDED_COST"),
 			aws.String("BLENDED_COST"),
-			aws.String("AMORTIZED_COST"),
-			aws.String("NET_AMORTIZED_COST"),
-			aws.String("NET_UNBLENDED_COST"),
-			aws.String("NORMALIZED_USAGE_AMOUNT"),
+			// aws.String("AMORTIZED_COST"),
+			// aws.String("NET_AMORTIZED_COST"),
+			// aws.String("NET_UNBLENDED_COST"),
+			// aws.String("NORMALIZED_USAGE_AMOUNT"),
 
 		},
 		GroupBy: []*costexplorer.GroupDefinition{
@@ -69,7 +68,7 @@ func getCloudFunctionCostDetail(region string, crossAccountRoleArn string, acces
 			Dimensions: &costexplorer.DimensionValues{
 				Key: aws.String("SERVICE"),
 				Values: []*string{
-					aws.String("Functions"),
+					aws.String("Amazon CloudFront"),
 				},
 			},
 		},
@@ -84,9 +83,5 @@ func getCloudFunctionCostDetail(region string, crossAccountRoleArn string, acces
 }
 
 func init() {
-	GetCostDataCmd.Flags().StringP("functionName", "t", "", "function name")
 
-	if err := GetConfigDataCmd.MarkFlagRequired("functionName"); err != nil {
-		fmt.Println(err)
-	}
 }

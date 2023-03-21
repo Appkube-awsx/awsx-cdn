@@ -67,5 +67,5 @@ func init() {
 	awsxCloudFunctionCmd.PersistentFlags().String("env", "", "aws env is required")
 	awsxCloudFunctionCmd.PersistentFlags().String("crossAccountRoleArn", "", "aws crossAccountRoleArn is required")
 	awsxCloudFunctionCmd.PersistentFlags().String("externalId", "", "aws external id auth")
-	// awsxCloudFunctionCmd.PersistentFlags().String("env", "", "aws env")
+	
 }
