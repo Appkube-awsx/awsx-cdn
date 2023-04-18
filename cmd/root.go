@@ -26,25 +26,25 @@ var awsxCloudFunctionCmd = &cobra.Command{
 		crossAccountRoleArn := cmd.PersistentFlags().Lookup("crossAccountRoleArn").Value.String()
 		env := cmd.PersistentFlags().Lookup("env").Value.String()
 		externalId := cmd.PersistentFlags().Lookup("externalId").Value.String()
-		
-		authFlag := authenticator.AuthenticateData(vaultUrl, accountNo, region, acKey, secKey,crossAccountRoleArn, env, externalId)
+
+		authFlag := authenticator.AuthenticateData(vaultUrl, accountNo, region, acKey, secKey, crossAccountRoleArn, env, externalId)
 
 		if authFlag {
 			cloudFunctionList(region, crossAccountRoleArn, acKey, secKey, env, externalId)
-	    }	
+		}
 	},
 }
 
-func cloudFunctionList(region string, crossAccountRoleArn string, accessKey string, secretKey string,env string,externalId string) (*cloudfront.ListFunctionsOutput,error){ 
+func cloudFunctionList(region string, crossAccountRoleArn string, accessKey string, secretKey string, env string, externalId string) (*cloudfront.ListFunctionsOutput, error) {
 	log.Println("Getting aws cloudFunction Count summary")
-	getClient := client.GetClient(region,crossAccountRoleArn,accessKey,secretKey,externalId)
-    input := &cloudfront.ListFunctionsInput{}
+	getClient := client.GetClient(region, crossAccountRoleArn, accessKey, secretKey, externalId)
+	input := &cloudfront.ListFunctionsInput{}
 	functionResponse, err := getClient.ListFunctions(input)
-	if err != nil{
+	if err != nil {
 		log.Fatalln("Error:", err)
 	}
 	log.Println(functionResponse)
-	return functionResponse,err
+	return functionResponse, err
 }
 
 func Execute() {
@@ -56,8 +56,9 @@ func Execute() {
 }
 
 func init() {
-    awsxCloudFunctionCmd.AddCommand(cloudfrontcmd.GetConfigDataCmd)
+	awsxCloudFunctionCmd.AddCommand(cloudfrontcmd.GetConfigDataCmd)
 	awsxCloudFunctionCmd.AddCommand(cloudfrontcmd.GetCostDataCmd)
+	awsxCloudFunctionCmd.AddCommand(cloudfrontcmd.GetCostSpikeCmd)
 
 	awsxCloudFunctionCmd.PersistentFlags().String("vaultUrl", "", "vault end point")
 	awsxCloudFunctionCmd.PersistentFlags().String("accountId", "", "aws account number")
@@ -67,5 +68,5 @@ func init() {
 	awsxCloudFunctionCmd.PersistentFlags().String("env", "", "aws env is required")
 	awsxCloudFunctionCmd.PersistentFlags().String("crossAccountRoleArn", "", "aws crossAccountRoleArn is required")
 	awsxCloudFunctionCmd.PersistentFlags().String("externalId", "", "aws external id auth")
-	
+
 }

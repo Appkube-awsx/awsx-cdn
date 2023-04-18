@@ -17,3 +17,9 @@ awsx-cloudfront getConfigData -t <table> --zone <zone> --accessKey <accessKey> -
 ```bash
 awsx-cloudfront getCostData -t <table> --zone <zone> --accessKey <accessKey> --secretKey <secretKey> --crossAccountRoleArn <crossAccountRoleArn> --external <externalId> --env <env>
 ```
+
+## To retrieve the cost Spikes of a specific CDN function in cloudfrontcmd run the following command:
+
+```bash
+awsx-cloudfront GetCostSpike -t <table> --zone <zone> --accessKey <accessKey> --secretKey <secretKey> --crossAccountRoleArn <crossAccountRoleArn> --external <externalId> --env <env> --granularity <granularity> --startDate <startDate> --endDate <endDate> 
+```

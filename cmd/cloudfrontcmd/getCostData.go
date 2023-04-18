@@ -26,7 +26,6 @@ var GetCostDataCmd = &cobra.Command{
 		env := cmd.Parent().PersistentFlags().Lookup("env").Value.String()
 		externalId := cmd.Parent().PersistentFlags().Lookup("externalId").Value.String()
 		authFlag := authenticator.AuthenticateData(vaultUrl, accountNo, region, acKey, secKey, crossAccountRoleArn, env, externalId)
-		
 
 		if authFlag {
 			getCloudFunctionCostDetail(region, crossAccountRoleArn, acKey, secKey, externalId)
@@ -40,14 +39,14 @@ func getCloudFunctionCostDetail(region string, crossAccountRoleArn string, acces
 
 	input := &costexplorer.GetCostAndUsageInput{
 		TimePeriod: &costexplorer.DateInterval{
-			Start: aws.String("2022-07-01"),
-			End:   aws.String("2022-07-31"),
+			Start: aws.String("2023-02-01"),
+			End:   aws.String("2023-03-01"),
 		},
 		Metrics: []*string{
 			// aws.String("USAGE_QUANTITY"),
 			aws.String("UNBLENDED_COST"),
 			aws.String("BLENDED_COST"),
-			// aws.String("AMORTIZED_COST"),
+			aws.String("AMORTIZED_COST"),
 			// aws.String("NET_AMORTIZED_COST"),
 			// aws.String("NET_UNBLENDED_COST"),
 			// aws.String("NORMALIZED_USAGE_AMOUNT"),
@@ -56,19 +55,31 @@ func getCloudFunctionCostDetail(region string, crossAccountRoleArn string, acces
 		GroupBy: []*costexplorer.GroupDefinition{
 			{
 				Type: aws.String("DIMENSION"),
-				Key: aws.String("REGION"),
+				Key:  aws.String("REGION"),
 			},
 			{
 				Type: aws.String("DIMENSION"),
-                Key: aws.String("SERVICE"),
+				Key:  aws.String("SERVICE"),
 			},
 		},
-		Granularity: aws.String("MONTHLY"),
+		Granularity: aws.String("DAILY"),
 		Filter: &costexplorer.Expression{
-			Dimensions: &costexplorer.DimensionValues{
-				Key: aws.String("SERVICE"),
-				Values: []*string{
-					aws.String("Amazon CloudFront"),
+			And: []*costexplorer.Expression{
+				{
+					Dimensions: &costexplorer.DimensionValues{
+						Key: aws.String("SERVICE"),
+						Values: []*string{
+							aws.String("Amazon CloudFront"),
+						},
+					},
+				},
+				{
+					Dimensions: &costexplorer.DimensionValues{
+						Key: aws.String("RECORD_TYPE"),
+						Values: []*string{
+							aws.String("Credit"),
+						},
+					},
 				},
 			},
 		},
@@ -78,6 +89,17 @@ func getCloudFunctionCostDetail(region string, crossAccountRoleArn string, acces
 	if err != nil {
 		log.Fatalln("Error: in getting cost data", err)
 	}
+	// totalCost := float64(0)
+	// for _, a := range costData.ResultsByTime {
+	// 	for _, group := range a.Groups {
+	// 		var amortizedCost, err = strconv.ParseFloat(*group.Metrics["AmortizedCost"].Amount, 64)
+	// 		if err == nil {
+	// 			//
+	// 			totalCost += amortizedCost
+	// 			log.Println(amortizedCost)
+	// 		}
+	// 	}
+	// }
 	log.Println(costData)
 	return costData, err
 }
