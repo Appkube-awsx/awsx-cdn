@@ -24,16 +24,15 @@ var GetConfigDataCmd = &cobra.Command{
 		acKey := cmd.Parent().PersistentFlags().Lookup("accessKey").Value.String()
 		secKey := cmd.Parent().PersistentFlags().Lookup("secretKey").Value.String()
 		crossAccountRoleArn := cmd.Parent().PersistentFlags().Lookup("crossAccountRoleArn").Value.String()
-		env := cmd.Parent().PersistentFlags().Lookup("env").Value.String()
 		externalId := cmd.Parent().PersistentFlags().Lookup("externalId").Value.String()
 
-		authFlag := authenticator.AuthenticateData(vaultUrl, accountNo, region, acKey, secKey, crossAccountRoleArn, env, externalId)
+		authFlag := authenticator.AuthenticateData(vaultUrl, accountNo, region, acKey, secKey, crossAccountRoleArn,  externalId)
 		print(authFlag)
 		// authFlag := true
 		if authFlag {
 			functionName, _ := cmd.Flags().GetString("functionName")
 			if functionName != "" {
-				getFunctionList(region, crossAccountRoleArn, acKey, secKey, functionName, env, externalId)
+				getFunctionList(region, crossAccountRoleArn, acKey, secKey, functionName, externalId)
 			} else {
 				log.Fatalln("functionName not provided. Program exit")
 			}
@@ -41,7 +40,7 @@ var GetConfigDataCmd = &cobra.Command{
 	},
 }
 
-func getFunctionList(region string, crossAccountRoleArn string, accessKey string, secretKey string, functionName string, env string, externalId string) *cloudfront.GetFunctionOutput {
+func getFunctionList(region string, crossAccountRoleArn string, accessKey string, secretKey string, functionName string, externalId string) *cloudfront.GetFunctionOutput {
 	log.Println("Getting aws cloud function Count summary")
 	getClient := client.GetClient(region, crossAccountRoleArn, accessKey, secretKey, externalId)
 	input := &cloudfront.GetFunctionInput{

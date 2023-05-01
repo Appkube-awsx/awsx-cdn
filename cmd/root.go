@@ -24,18 +24,17 @@ var awsxCloudFunctionCmd = &cobra.Command{
 		acKey := cmd.PersistentFlags().Lookup("accessKey").Value.String()
 		secKey := cmd.PersistentFlags().Lookup("secretKey").Value.String()
 		crossAccountRoleArn := cmd.PersistentFlags().Lookup("crossAccountRoleArn").Value.String()
-		env := cmd.PersistentFlags().Lookup("env").Value.String()
 		externalId := cmd.PersistentFlags().Lookup("externalId").Value.String()
 
-		authFlag := authenticator.AuthenticateData(vaultUrl, accountNo, region, acKey, secKey, crossAccountRoleArn, env, externalId)
+		authFlag := authenticator.AuthenticateData(vaultUrl, accountNo, region, acKey, secKey, crossAccountRoleArn,  externalId)
 
 		if authFlag {
-			cloudFunctionList(region, crossAccountRoleArn, acKey, secKey, env, externalId)
+			cloudFunctionList(region, crossAccountRoleArn, acKey, secKey,  externalId)
 		}
 	},
 }
 
-func cloudFunctionList(region string, crossAccountRoleArn string, accessKey string, secretKey string, env string, externalId string) (*cloudfront.ListFunctionsOutput, error) {
+func cloudFunctionList(region string, crossAccountRoleArn string, accessKey string, secretKey string,  externalId string) (*cloudfront.ListFunctionsOutput, error) {
 	log.Println("Getting aws cloudFunction Count summary")
 	getClient := client.GetClient(region, crossAccountRoleArn, accessKey, secretKey, externalId)
 	input := &cloudfront.ListFunctionsInput{}
@@ -65,7 +64,6 @@ func init() {
 	awsxCloudFunctionCmd.PersistentFlags().String("zone", "", "aws region")
 	awsxCloudFunctionCmd.PersistentFlags().String("accessKey", "", "aws access key")
 	awsxCloudFunctionCmd.PersistentFlags().String("secretKey", "", "aws secret key")
-	awsxCloudFunctionCmd.PersistentFlags().String("env", "", "aws env is required")
 	awsxCloudFunctionCmd.PersistentFlags().String("crossAccountRoleArn", "", "aws crossAccountRoleArn is required")
 	awsxCloudFunctionCmd.PersistentFlags().String("externalId", "", "aws external id auth")
 
