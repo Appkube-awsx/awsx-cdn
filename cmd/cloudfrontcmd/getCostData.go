@@ -46,18 +46,15 @@ func getCloudFunctionCostDetail(region string, crossAccountRoleArn string, acces
 
 	input := &costexplorer.GetCostAndUsageInput{
 		TimePeriod: &costexplorer.DateInterval{
-			Start: aws.String("2023-02-01"),
-			End:   aws.String("2023-03-01"),
+			Start: aws.String(startDate),
+			End:   aws.String(endDate),
 		},
 		Metrics: []*string{
-			// aws.String("USAGE_QUANTITY"),
+			
 			aws.String("UNBLENDED_COST"),
 			aws.String("BLENDED_COST"),
 			aws.String("AMORTIZED_COST"),
-			// aws.String("NET_AMORTIZED_COST"),
-			// aws.String("NET_UNBLENDED_COST"),
-			// aws.String("NORMALIZED_USAGE_AMOUNT"),
-
+			
 		},
 		GroupBy: []*costexplorer.GroupDefinition{
 			{
