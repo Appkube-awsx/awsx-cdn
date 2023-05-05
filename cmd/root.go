@@ -17,7 +17,7 @@ var awsxCloudFunctionCmd = &cobra.Command{
 	Long:  `cloudFunctionListDetails command gets resource counts details of an AWS account`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Println("Command getcloudFunctionListDetails started")
+		log.Println("Command get cloud Function List Details started")
 		vaultUrl := cmd.PersistentFlags().Lookup("vaultUrl").Value.String()
 		accountNo := cmd.PersistentFlags().Lookup("accountId").Value.String()
 		region := cmd.PersistentFlags().Lookup("zone").Value.String()
@@ -56,9 +56,7 @@ func Execute() {
 
 func init() {
 	awsxCloudFunctionCmd.AddCommand(cloudfrontcmd.GetConfigDataCmd)
-	awsxCloudFunctionCmd.AddCommand(cloudfrontcmd.GetCostDataCmd)
-	awsxCloudFunctionCmd.AddCommand(cloudfrontcmd.GetCostSpikeCmd)
-
+	
 	awsxCloudFunctionCmd.PersistentFlags().String("vaultUrl", "", "vault end point")
 	awsxCloudFunctionCmd.PersistentFlags().String("accountId", "", "aws account number")
 	awsxCloudFunctionCmd.PersistentFlags().String("zone", "", "aws region")
