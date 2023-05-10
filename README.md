@@ -92,7 +92,7 @@ go run main.go  --zone=us-east-1 --accessKey=<> --secretKey=<> --crossAccountRol
 
 cloudfront extension
 
-# AWSX Commands for AWSX-eks Cli's :
+# AWSX Commands for AWSX-cloudFront Cli's :
 
 1. CMD used to get list of cloudfront instance's :
 
