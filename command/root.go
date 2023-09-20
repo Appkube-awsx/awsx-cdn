@@ -1,12 +1,12 @@
-package cmd
+package command
 
 import (
+	"github.com/Appkube-awsx/awsx-common/authenticate"
 	"log"
 	"os"
 
-	"github.com/Appkube-awsx/awsx-cloudfront/authenticator"
-	"github.com/Appkube-awsx/awsx-cloudfront/client"
-	"github.com/Appkube-awsx/awsx-cloudfront/cmd/cloudfrontcmd"
+	"github.com/Appkube-awsx/awsx-cdn/command/cloudfrontcmd"
+	"github.com/Appkube-awsx/awsx-common/client"
 	"github.com/aws/aws-sdk-go/service/cloudfront"
 	"github.com/spf13/cobra"
 )
@@ -18,27 +18,26 @@ var awsxCloudFunctionCmd = &cobra.Command{
 
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Println("Command get cloud Function List Details started")
-		vaultUrl := cmd.PersistentFlags().Lookup("vaultUrl").Value.String()
-		accountNo := cmd.PersistentFlags().Lookup("accountId").Value.String()
-		region := cmd.PersistentFlags().Lookup("zone").Value.String()
-		acKey := cmd.PersistentFlags().Lookup("accessKey").Value.String()
-		secKey := cmd.PersistentFlags().Lookup("secretKey").Value.String()
-		crossAccountRoleArn := cmd.PersistentFlags().Lookup("crossAccountRoleArn").Value.String()
-		externalId := cmd.PersistentFlags().Lookup("externalId").Value.String()
 
-		authFlag := authenticator.AuthenticateData(vaultUrl, accountNo, region, acKey, secKey, crossAccountRoleArn,  externalId)
-
+		authFlag, clientAuth, err := authenticate.CommandAuth(cmd)
+		if err != nil {
+			cmd.Help()
+			return
+		}
 		if authFlag {
-			cloudFunctionList(region, crossAccountRoleArn, acKey, secKey,  externalId)
+			CloudFunctionList(*clientAuth)
+		} else {
+			cmd.Help()
+			return
 		}
 	},
 }
 
-func cloudFunctionList(region string, crossAccountRoleArn string, accessKey string, secretKey string,  externalId string) (*cloudfront.ListFunctionsOutput, error) {
+func CloudFunctionList(auth client.Auth) (*cloudfront.ListFunctionsOutput, error) {
 	log.Println("Getting aws cloudFunction Count summary")
-	getClient := client.GetClient(region, crossAccountRoleArn, accessKey, secretKey, externalId)
+	client := client.GetClient(auth, client.CLOUD_FRONT_CLIENT).(*cloudfront.CloudFront)
 	input := &cloudfront.ListFunctionsInput{}
-	functionResponse, err := getClient.ListFunctions(input)
+	functionResponse, err := client.ListFunctions(input)
 	if err != nil {
 		log.Fatalln("Error:", err)
 	}
@@ -56,8 +55,9 @@ func Execute() {
 
 func init() {
 	awsxCloudFunctionCmd.AddCommand(cloudfrontcmd.GetConfigDataCmd)
-	
+
 	awsxCloudFunctionCmd.PersistentFlags().String("vaultUrl", "", "vault end point")
+	awsxCloudFunctionCmd.PersistentFlags().String("vaultToken", "", "vault token")
 	awsxCloudFunctionCmd.PersistentFlags().String("accountId", "", "aws account number")
 	awsxCloudFunctionCmd.PersistentFlags().String("zone", "", "aws region")
 	awsxCloudFunctionCmd.PersistentFlags().String("accessKey", "", "aws access key")

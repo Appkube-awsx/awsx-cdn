@@ -1,7 +1,7 @@
 package main
 
-import "github.com/Appkube-awsx/awsx-cloudfront/cmd"
+import "github.com/Appkube-awsx/awsx-cdn/command"
 
-func main(){
-	cmd.Execute()
+func main() {
+	command.Execute()
 }
