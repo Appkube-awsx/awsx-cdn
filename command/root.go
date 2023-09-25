@@ -34,7 +34,7 @@ var awsxCloudFunctionCmd = &cobra.Command{
 }
 
 func CloudFunctionList(auth client.Auth) (*cloudfront.ListFunctionsOutput, error) {
-	log.Println("Getting aws cloudFunction Count summary")
+	log.Println("Getting aws cloudfront function list")
 	client := client.GetClient(auth, client.CLOUD_FRONT_CLIENT).(*cloudfront.CloudFront)
 	input := &cloudfront.ListFunctionsInput{}
 	functionResponse, err := client.ListFunctions(input)
@@ -54,7 +54,9 @@ func Execute() {
 }
 
 func init() {
-	awsxCloudFunctionCmd.AddCommand(cloudfrontcmd.GetConfigDataCmd)
+	awsxCloudFunctionCmd.AddCommand(cloudfrontcmd.GetFunctionCmd)
+	awsxCloudFunctionCmd.AddCommand(cloudfrontcmd.GetDistributionListCmd)
+	awsxCloudFunctionCmd.AddCommand(cloudfrontcmd.GetDistributionConfigWithTagsCmd)
 
 	awsxCloudFunctionCmd.PersistentFlags().String("vaultUrl", "", "vault end point")
 	awsxCloudFunctionCmd.PersistentFlags().String("vaultToken", "", "vault token")

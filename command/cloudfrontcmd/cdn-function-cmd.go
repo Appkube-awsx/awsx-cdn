@@ -11,11 +11,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// GetConfigDataCmd represents the getConfigData command
-var GetConfigDataCmd = &cobra.Command{
-	Use:   "getConfigData",
-	Short: "Config data for cloudfront function",
-	Long:  `Config data for cloudfront function`,
+// GetFunctionCmd represents the getCdnFunction command
+var GetFunctionCmd = &cobra.Command{
+	Use:   "getCdnFunction",
+	Short: "Cloudfront function",
+	Long:  `Cloudfront function`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		authFlag, clientAuth, err := authenticate.SubCommandAuth(cmd)
@@ -27,7 +27,7 @@ var GetConfigDataCmd = &cobra.Command{
 		if authFlag {
 			functionName, _ := cmd.Flags().GetString("functionName")
 			if functionName != "" {
-				GetFunctionList(functionName, *clientAuth)
+				GetCdnFunction(functionName, *clientAuth)
 			} else {
 				log.Fatalln("function name not provided. program exit")
 			}
@@ -36,8 +36,8 @@ var GetConfigDataCmd = &cobra.Command{
 	},
 }
 
-func GetFunctionList(functionName string, auth client.Auth) *cloudfront.GetFunctionOutput {
-	log.Println("Getting aws cloud function Count summary")
+func GetCdnFunction(functionName string, auth client.Auth) *cloudfront.GetFunctionOutput {
+	log.Println("Getting aws cloudfront function")
 	client := client.GetClient(auth, client.CLOUD_FRONT_CLIENT).(*cloudfront.CloudFront)
 	input := &cloudfront.GetFunctionInput{
 		Name: aws.String(functionName),
@@ -51,9 +51,9 @@ func GetFunctionList(functionName string, auth client.Auth) *cloudfront.GetFunct
 }
 
 func init() {
-	GetConfigDataCmd.Flags().StringP("functionName", "f", "", "function name")
+	GetFunctionCmd.Flags().StringP("functionName", "f", "", "function name")
 
-	if err := GetConfigDataCmd.MarkFlagRequired("functionName"); err != nil {
+	if err := GetFunctionCmd.MarkFlagRequired("functionName"); err != nil {
 		fmt.Println(err)
 	}
 }

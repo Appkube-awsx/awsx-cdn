@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/Appkube-awsx/awsx-cdn/command"
+	"github.com/Appkube-awsx/awsx-cdn/command/cloudfrontcmd"
 	"github.com/Appkube-awsx/awsx-common/authenticate"
 	"github.com/Appkube-awsx/awsx-common/client"
 	"github.com/aws/aws-sdk-go/service/cloudfront"
@@ -35,11 +36,20 @@ func GetCdnByFlagAndClientAuth(authFlag bool, clientAuth *client.Auth, err error
 	return response, nil
 }
 
-func GetCdn(clientAuth *client.Auth) (*cloudfront.ListFunctionsOutput, error) {
+func GetCdnFunctions(clientAuth *client.Auth) (*cloudfront.ListFunctionsOutput, error) {
 	response, err := command.CloudFunctionList(*clientAuth)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, err
+	}
+	return response, nil
+}
+
+func GetCdnDistributionConfigWithTags(clientAuth *client.Auth) (string, error) {
+	response, err := cloudfrontcmd.CdnDistributionConfigWithTagList(*clientAuth)
+	if err != nil {
+		log.Println(err.Error())
+		return "", err
 	}
 	return response, nil
 }
